@@ -1,0 +1,26 @@
+- name: check the status of influxdb URL
+  uri:
+    url: "http://{{ influxdb_IP }}:8083"
+    user: "{{ influxdb_username }}"
+    password: "{{ influxdb_password }}"
+    force_basic_auth: yes
+  register: influx
+  ignore_errors: yes
+- name: check the status of influxdb URL
+  uri:
+    url: "http://{{ grafana_ip }}:3000"
+    user: "{{ grafana_username }}"
+    password: "{{ grafana_password }}"
+    force_basic_auth: yes
+  register: grafana
+  ignore_errors: yes
+- name: echo error message for influxdb
+  debug:
+    msg: "{{ influx.msg }}"
+  when: influx.status != 200 or influx.status == 401
+- name: echo error message for grafana
+  debug:
+    msg: "{{ grafana.msg }}"
+  when: grafana.status != 200 or grafana.status == 401
+  
+  

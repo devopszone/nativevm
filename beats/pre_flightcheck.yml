@@ -1,0 +1,27 @@
+- name: check the status of ElasticSearch URL
+  uri:
+    url: "{{ elasticsearch_url }}"
+    user: "{{ elasticsearch_username }}"
+    password: "{{ elasticsearch_password }}"
+    force_basic_auth: yes
+  register: elasticsearch
+  ignore_errors: yes
+  
+- name: check the status of kibana URL
+  uri:
+    url: "{{ kibana_url }}"
+    user: "{{ kibana_username }}"
+    password: "{{ kibana_password }}" 
+    force_basic_auth: yes
+  register: kibana
+  ignore_errors: yes
+  
+- name: echo error message for elasticsearch
+  debug:
+    msg: "{{ elasticsearch.msg }}"
+  when: elasticsearch.status != 200 or elasticsearch.status == 401
+  
+- name: echo error message for kibana
+  debug:
+    msg: "{{ kibana.msg }}"
+  when: kibana.status != 200 or kibana.status == 401
